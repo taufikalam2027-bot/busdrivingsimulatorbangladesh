@@ -1,4 +1,61 @@
-using System.Collections;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bus Simulator BD — B.S TEAM (index.html)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0b0f17;
+      color: #e6edf3;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #131a26;
+      border: 1px solid #263248;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+    .header h1 {
+      font-size: 16px;
+      color: #58a6ff;
+    }
+    .copy-btn {
+      background: #238636;
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .copy-btn:hover { background: #2ea043; }
+    pre {
+      background: #111622;
+      border: 1px solid #263248;
+      border-radius: 8px;
+      padding: 18px;
+      overflow-x: auto;
+      font-size: 13px;
+      color: #d2e0f5;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Bus Simulator BD (B.S TEAM) — Realistic Simulation Engine</h1>
+    <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+  </div>
+  <pre id="codeBlock">using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -57,14 +114,14 @@ namespace BSTeam.BusSimulatorBD.Core
             yield return StartCoroutine(VerifyAndMountBangladeshiAssets());
 
             // Phase 3: Asynchronously stream 3D Garage scene
-            UpdateProgress(0.45f, "Loading Dhaka Garage & Hanif Fleet...");
+            UpdateProgress(0.45f, "Loading Dhaka Garage &amp; Hanif Fleet...");
             AsyncOperation loadOp = SceneManager.LoadSceneAsync(garageSceneName);
             loadOp.allowSceneActivation = false;
 
-            while (loadOp.progress < 0.9f)
+            while (loadOp.progress &lt; 0.9f)
             {
                 float mappedProgress = 0.45f + (loadOp.progress / 0.9f) * 0.50f;
-                UpdateProgress(mappedProgress, "Preparing Bangladeshi Roads & Liveries...");
+                UpdateProgress(mappedProgress, "Preparing Bangladeshi Roads &amp; Liveries...");
                 yield return null;
             }
 
@@ -75,7 +132,7 @@ namespace BSTeam.BusSimulatorBD.Core
 
         private IEnumerator VerifyAndMountBangladeshiAssets()
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID &amp;&amp; !UNITY_EDITOR
             if (AndroidAssetPacks.coreUnityAssetPacksDownloaded)
             {
                 string[] corePacks = AndroidAssetPacks.GetCoreUnityAssetPackNames();
@@ -100,7 +157,7 @@ namespace BSTeam.BusSimulatorBD.Core
 
             if (!needsDownload)
             {
-                UpdateProgress(0.40f, "Bangladeshi Fleet & 64-District Map Mounted.");
+                UpdateProgress(0.40f, "Bangladeshi Fleet &amp; 64-District Map Mounted.");
             }
             else
             {
@@ -108,7 +165,7 @@ namespace BSTeam.BusSimulatorBD.Core
                 var downloadOp = AndroidAssetPacks.DownloadAssetPackAsync(targetPacks);
                 while (!downloadOp.isDone)
                 {
-                    UpdateProgress(0.25f + (downloadOp.progress * 0.15f), "Downloading Map & Traffic Assets...");
+                    UpdateProgress(0.25f + (downloadOp.progress * 0.15f), "Downloading Map &amp; Traffic Assets...");
                     yield return null;
                 }
             }
@@ -124,7 +181,7 @@ namespace BSTeam.BusSimulatorBD.Core
             float elapsed = 0f;
             group.alpha = startAlpha;
 
-            while (elapsed < duration)
+            while (elapsed &lt; duration)
             {
                 elapsed += Time.deltaTime;
                 group.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsed / duration);
@@ -144,6 +201,7 @@ namespace BSTeam.BusSimulatorBD.Core
         }
     }
 }
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -153,12 +211,12 @@ namespace BSTeam.BusSimulatorBD.World
     {
         public static FloatingOriginManager Instance { get; private set; }
 
-        [Header("Target & Precision Threshold")]
+        [Header("Target &amp; Precision Threshold")]
         [SerializeField] private Transform playerBusTransform;
         [SerializeField] private float recenterThresholdMeters = 2000f;
 
         [Header("Tracked World Roots (Terrain, Roads, Landmarks, Traffic)")]
-        [SerializeField] private List<Transform> worldRootObjects = new List<Transform>();
+        [SerializeField] private List&lt;Transform&gt; worldRootObjects = new List&lt;Transform&gt;();
 
         public Vector3d CumulativeWorldOffset { get; private set; }
 
@@ -171,7 +229,7 @@ namespace BSTeam.BusSimulatorBD.World
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
+            if (Instance != null &amp;&amp; Instance != this)
             {
                 Destroy(gameObject);
                 return;
@@ -187,7 +245,7 @@ namespace BSTeam.BusSimulatorBD.World
             Vector3 currentPos = playerBusTransform.position;
             float horizontalDistance = new Vector2(currentPos.x, currentPos.z).magnitude;
 
-            if (horizontalDistance >= recenterThresholdMeters)
+            if (horizontalDistance &gt;= recenterThresholdMeters)
             {
                 ShiftWorldToOrigin(new Vector3(currentPos.x, 0f, currentPos.z));
             }
@@ -195,7 +253,7 @@ namespace BSTeam.BusSimulatorBD.World
 
         public void RegisterWorldRoot(Transform rootTransform)
         {
-            if (rootTransform != null && !worldRootObjects.Contains(rootTransform))
+            if (rootTransform != null &amp;&amp; !worldRootObjects.Contains(rootTransform))
                 worldRootObjects.Add(rootTransform);
         }
 
@@ -205,7 +263,7 @@ namespace BSTeam.BusSimulatorBD.World
 
             playerBusTransform.position -= shiftDelta;
 
-            for (int i = 0; i < worldRootObjects.Count; i++)
+            for (int i = 0; i &lt; worldRootObjects.Count; i++)
             {
                 if (worldRootObjects[i] != null)
                     worldRootObjects[i].position -= shiftDelta;
@@ -231,6 +289,7 @@ namespace BSTeam.BusSimulatorBD.World
         }
     }
 }
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -266,14 +325,14 @@ namespace BSTeam.BusSimulatorBD.World
         public readonly float highwayCompressionRatio = 20.0f;
 
         [Header("All 64 Districts Registry")]
-        public List<DistrictNode> allDistricts = new List<DistrictNode>();
+        public List&lt;DistrictNode&gt; allDistricts = new List&lt;DistrictNode&gt;();
 
-        public event Action<DistrictNode> OnTourHighlightEntered;
-        public event Action<DistrictNode> OnMandatoryHotelStopReached;
+        public event Action&lt;DistrictNode&gt; OnTourHighlightEntered;
+        public event Action&lt;DistrictNode&gt; OnMandatoryHotelStopReached;
 
         private void Awake()
         {
-            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+            if (Instance != null &amp;&amp; Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
@@ -283,10 +342,10 @@ namespace BSTeam.BusSimulatorBD.World
 
         private void Populate64Districts()
         {
-            // Priority Launch Corridor: Meherpur -> Kushtia -> Sirajganj -> Savar/Dhaka
+            // Priority Launch Corridor: Meherpur -&gt; Kushtia -&gt; Sirajganj -&gt; Savar/Dhaka
             Add(1, "Dhaka", BDDivision.Dhaka, "Jatiya Smriti Soudho (Savar)", "Lalbagh Fort, Ahsan Manzil, Buriganga", RHDHighwayClass.National_N, new Vector2(0, 0), true, false);
-            Add(2, "Meherpur", BDDivision.Khulna, "Mujibnagar Memorial & Amrokanon", "23 Pillars, 24x14ft Lal Mancha, Amjhupi", RHDHighwayClass.Regional_R, new Vector2(-13200, 1200), true, false);
-            Add(3, "Kushtia", BDDivision.Khulna, "Lalon Shah Mazar & Shilaidaha Kuthibari", "Hardinge Bridge, Lalon Shah Bridge, Tagore Lodge", RHDHighwayClass.National_N, new Vector2(-10400, 1600), true, false);
+            Add(2, "Meherpur", BDDivision.Khulna, "Mujibnagar Memorial &amp; Amrokanon", "23 Pillars, 24x14ft Lal Mancha, Amjhupi", RHDHighwayClass.Regional_R, new Vector2(-13200, 1200), true, false);
+            Add(3, "Kushtia", BDDivision.Khulna, "Lalon Shah Mazar &amp; Shilaidaha Kuthibari", "Hardinge Bridge, Lalon Shah Bridge, Tagore Lodge", RHDHighwayClass.National_N, new Vector2(-10400, 1600), true, false);
             Add(4, "Sirajganj", BDDivision.Rajshahi, "Hatikumrul Food Village Highway Hotel", "Jamuna Bridge West Approach, Nabaratna Mandir", RHDHighwayClass.National_N, new Vector2(-5800, 3400), true, true);
 
             // Remaining Dhaka Division (12 more = 13 total)
@@ -305,33 +364,33 @@ namespace BSTeam.BusSimulatorBD.World
 
             // Chittagong Division (11)
             Add(17, "Chittagong", BDDivision.Chittagong, "Patenga Sea Beach", "Foy's Lake, Batali Hill, WWII Cemetery", RHDHighwayClass.National_N, new Vector2(7800, -7600), true, false);
-            Add(18, "Cox's Bazar", BDDivision.Chittagong, "Cox's Bazar Marine Drive & Beach", "Inani Beach, Himchori, St. Martin's Island", RHDHighwayClass.National_N, new Vector2(9200, -13500), true, false);
-            Add(19, "Bandarban", BDDivision.Chittagong, "Nilgiri & Golden Temple", "Meghla, Chimbuk, Boga Lake, Nafakhum", RHDHighwayClass.Zilla_Z, new Vector2(9700, -8900), true, false);
-            Add(20, "Rangamati", BDDivision.Chittagong, "Kaptai Lake & Hanging Bridge", "Rajban Vihara, Sajek Valley", RHDHighwayClass.Regional_R, new Vector2(9900, -6800), true, false);
+            Add(18, "Cox's Bazar", BDDivision.Chittagong, "Cox's Bazar Marine Drive &amp; Beach", "Inani Beach, Himchori, St. Martin's Island", RHDHighwayClass.National_N, new Vector2(9200, -13500), true, false);
+            Add(19, "Bandarban", BDDivision.Chittagong, "Nilgiri &amp; Golden Temple", "Meghla, Chimbuk, Boga Lake, Nafakhum", RHDHighwayClass.Zilla_Z, new Vector2(9700, -8900), true, false);
+            Add(20, "Rangamati", BDDivision.Chittagong, "Kaptai Lake &amp; Hanging Bridge", "Rajban Vihara, Sajek Valley", RHDHighwayClass.Regional_R, new Vector2(9900, -6800), true, false);
             Add(21, "Khagrachhari", BDDivision.Chittagong, "Alutila Mysterious Cave", "Risang Waterfall, Dighinala Bon Bihar", RHDHighwayClass.Regional_R, new Vector2(8500, -4500), true, false);
             Add(22, "Comilla", BDDivision.Chittagong, "Shalban Buddhist Vihara", "Mainamati, Matri Vandar", RHDHighwayClass.National_N, new Vector2(4100, -1800), false, false);
-            Add(23, "Brahmanbaria", BDDivision.Chittagong, "Hatir Pool & Anderson Memorial", "Sagardighi Mosque, Akhaura", RHDHighwayClass.National_N, new Vector2(3900, 1100), false, false);
+            Add(23, "Brahmanbaria", BDDivision.Chittagong, "Hatir Pool &amp; Anderson Memorial", "Sagardighi Mosque, Akhaura", RHDHighwayClass.National_N, new Vector2(3900, 1100), false, false);
             Add(24, "Chandpur", BDDivision.Chittagong, "Chandpur Steamer River Port", "Angikar Monument, Hajiganj Mosque", RHDHighwayClass.Regional_R, new Vector2(1800, -3100), false, false);
             Add(25, "Feni", BDDivision.Chittagong, "Bijoy Singh Dighi", "Muhuri Barrage, Chandgazi Mosque", RHDHighwayClass.National_N, new Vector2(5400, -4300), false, false);
-            Add(26, "Noakhali", BDDivision.Chittagong, "Gandhi Ashram & Bajra Mosque", "Nijhum Dweep, Ruhul Amin Museum", RHDHighwayClass.Regional_R, new Vector2(3600, -4900), false, false);
+            Add(26, "Noakhali", BDDivision.Chittagong, "Gandhi Ashram &amp; Bajra Mosque", "Nijhum Dweep, Ruhul Amin Museum", RHDHighwayClass.Regional_R, new Vector2(3600, -4900), false, false);
             Add(27, "Lakshmipur", BDDivision.Chittagong, "Dalal Bazar Zamindar Bari", "Khoa Sagar Dighi, Zeener Mosque", RHDHighwayClass.Regional_R, new Vector2(2400, -4500), false, false);
 
             // Khulna Division (Remaining 8 + Meherpur + Kushtia = 10)
             Add(28, "Khulna", BDDivision.Khulna, "Sundarbans Launch Gateway", "Shahid Hadis Park, Karamjal, Kotka", RHDHighwayClass.National_N, new Vector2(-4600, -5800), true, false);
             Add(29, "Bagerhat", BDDivision.Khulna, "Sixty Dome Mosque", "Mosque City, Mongla Sundarbans Entry", RHDHighwayClass.National_N, new Vector2(-3400, -6300), true, false);
-            Add(30, "Satkhira", BDDivision.Khulna, "Sundarbans Shyamnagar & Mandarbaria", "Mai Champa Dargah, Jahajghata Fort", RHDHighwayClass.Regional_R, new Vector2(-6900, -6100), true, false);
+            Add(30, "Satkhira", BDDivision.Khulna, "Sundarbans Shyamnagar &amp; Mandarbaria", "Mai Champa Dargah, Jahajghata Fort", RHDHighwayClass.Regional_R, new Vector2(-6900, -6100), true, false);
             Add(31, "Chuadanga", BDDivision.Khulna, "Karpasdanga Neelkuthi", "Chuadanga Bara Mosque", RHDHighwayClass.Regional_R, new Vector2(-11500, -500), false, false);
-            Add(32, "Jessore", BDDivision.Khulna, "Benapole Port & Sagardari", "Chanchra Shiva Temple, Godkhali", RHDHighwayClass.National_N, new Vector2(-6700, -3300), false, false);
+            Add(32, "Jessore", BDDivision.Khulna, "Benapole Port &amp; Sagardari", "Chanchra Shiva Temple, Godkhali", RHDHighwayClass.National_N, new Vector2(-6700, -3300), false, false);
             Add(33, "Jhenaidah", BDDivision.Khulna, "Naldanga Temple Complex", "Dhol Samudra Dighi, Miyar Dalan", RHDHighwayClass.National_N, new Vector2(-7800, -1400), false, false);
             Add(34, "Magura", BDDivision.Khulna, "Raja Sitaram Roy Rajbari", "District Heritage Hub", RHDHighwayClass.National_N, new Vector2(-5800, -1500), false, false);
             Add(35, "Narail", BDDivision.Khulna, "Chitra River Otter Fishing", "Kadamtala Mosque, Ghazir Dargah", RHDHighwayClass.Zilla_Z, new Vector2(-4800, -3200), false, false);
 
             // Rajshahi Division (Remaining 7 + Sirajganj = 8)
-            Add(36, "Rajshahi", BDDivision.Rajshahi, "Varendra Heritage Gateway", "Terminal & Regional Connector", RHDHighwayClass.National_N, new Vector2(-9500, 3200), false, false);
+            Add(36, "Rajshahi", BDDivision.Rajshahi, "Varendra Heritage Gateway", "Terminal &amp; Regional Connector", RHDHighwayClass.National_N, new Vector2(-9500, 3200), false, false);
             Add(37, "Bogra", BDDivision.Rajshahi, "Mahasthangarh", "Gokul Medh, Vasu Vihara, Kherua Mosque", RHDHighwayClass.National_N, new Vector2(-5200, 5600), true, false);
             Add(38, "Joypurhat", BDDivision.Rajshahi, "Hinda-Koshba Shahi Mosque", "Joypurhat Rail Station, Lokma Rajbari", RHDHighwayClass.Regional_R, new Vector2(-6900, 7200), false, false);
             Add(39, "Naogaon", BDDivision.Rajshahi, "Paharpur Buddhist Vihara", "Kusumba Mosque, Patishar Kuthibari", RHDHighwayClass.Regional_R, new Vector2(-7900, 5500), true, false);
-            Add(40, "Natore", BDDivision.Rajshahi, "Pagla Raja Palace & Halti Beel", "Natore Heritage", RHDHighwayClass.National_N, new Vector2(-7400, 3300), false, false);
+            Add(40, "Natore", BDDivision.Rajshahi, "Pagla Raja Palace &amp; Halti Beel", "Natore Heritage", RHDHighwayClass.National_N, new Vector2(-7400, 3300), false, false);
             Add(41, "Chapai Nawabganj", BDDivision.Rajshahi, "Chhota Sona Mosque", "Darashbari Mosque, Tohakhana", RHDHighwayClass.National_N, new Vector2(-11500, 4400), false, false);
             Add(42, "Pabna", BDDivision.Rajshahi, "Jor Bangla Temple", "Anukulchandra Ashram, Paksey", RHDHighwayClass.National_N, new Vector2(-6800, 1400), false, false);
 
@@ -340,16 +399,16 @@ namespace BSTeam.BusSimulatorBD.World
             Add(44, "Dinajpur", BDDivision.Rangpur, "Kantajew Temple", "Ramsagar, Dinajpur Rajbari, Shopnopuri", RHDHighwayClass.National_N, new Vector2(-8800, 9300), true, false);
             Add(45, "Kurigram", BDDivision.Rangpur, "Dharla Bridge", "Bhitarbandh Zamindar Bari, Chilmari Ghat", RHDHighwayClass.Regional_R, new Vector2(-3900, 9900), false, false);
             Add(46, "Gaibandha", BDDivision.Rangpur, "Palace of Raja Birat", "Naldanga Zamindar Bari", RHDHighwayClass.Regional_R, new Vector2(-4300, 7400), false, false);
-            Add(47, "Lalmonirhat", BDDivision.Rangpur, "Tin Bigha Corridor & Burimari", "Teesta Barrage, Kakina Rajbari", RHDHighwayClass.National_N, new Vector2(-5300, 11100), true, false);
-            Add(48, "Nilphamari", BDDivision.Rangpur, "Nilsagar Dighi & Chini Mosque", "Saidpur Rail Factory & Airport", RHDHighwayClass.Regional_R, new Vector2(-7700, 10800), false, false);
+            Add(47, "Lalmonirhat", BDDivision.Rangpur, "Tin Bigha Corridor &amp; Burimari", "Teesta Barrage, Kakina Rajbari", RHDHighwayClass.National_N, new Vector2(-5300, 11100), true, false);
+            Add(48, "Nilphamari", BDDivision.Rangpur, "Nilsagar Dighi &amp; Chini Mosque", "Saidpur Rail Factory &amp; Airport", RHDHighwayClass.Regional_R, new Vector2(-7700, 10800), false, false);
             Add(49, "Panchagarh", BDDivision.Rangpur, "Banglabandha Zero Point", "Bhitargarh, Mirzapur Shahi Mosque", RHDHighwayClass.National_N, new Vector2(-9500, 13200), true, false);
             Add(50, "Thakurgaon", BDDivision.Rangpur, "Baliadangi Giant Mango Tree", "Raja Tonkanath Palace, Haripur Rajbari", RHDHighwayClass.National_N, new Vector2(-10100, 11400), false, false);
 
             // Sylhet Division (4)
-            Add(51, "Sylhet", BDDivision.Sylhet, "Ratargul Swamp Forest & Jaflong", "Hazrat Shah Jalal Shrine, Surma River", RHDHighwayClass.National_N, new Vector2(7400, 5600), true, false);
-            Add(52, "Moulvibazar", BDDivision.Sylhet, "Hakaluki Haor & Tea Gardens", "Madhabkunda Waterfall, Lawachara Park", RHDHighwayClass.Regional_R, new Vector2(6700, 3800), true, false);
-            Add(53, "Habiganj", BDDivision.Sylhet, "Satchari & Putijuri Mosque", "Bagala Matar Mandir, Kalibari", RHDHighwayClass.National_N, new Vector2(5100, 3300), false, false);
-            Add(54, "Sunamganj", BDDivision.Sylhet, "Haor Wetlands & Selbarash Mosque", "Sukhair Kalibari Temple", RHDHighwayClass.Regional_R, new Vector2(5400, 6800), true, false);
+            Add(51, "Sylhet", BDDivision.Sylhet, "Ratargul Swamp Forest &amp; Jaflong", "Hazrat Shah Jalal Shrine, Surma River", RHDHighwayClass.National_N, new Vector2(7400, 5600), true, false);
+            Add(52, "Moulvibazar", BDDivision.Sylhet, "Hakaluki Haor &amp; Tea Gardens", "Madhabkunda Waterfall, Lawachara Park", RHDHighwayClass.Regional_R, new Vector2(6700, 3800), true, false);
+            Add(53, "Habiganj", BDDivision.Sylhet, "Satchari &amp; Putijuri Mosque", "Bagala Matar Mandir, Kalibari", RHDHighwayClass.National_N, new Vector2(5100, 3300), false, false);
+            Add(54, "Sunamganj", BDDivision.Sylhet, "Haor Wetlands &amp; Selbarash Mosque", "Sukhair Kalibari Temple", RHDHighwayClass.Regional_R, new Vector2(5400, 6800), true, false);
 
             // Barisal Division (6)
             Add(55, "Barisal", BDDivision.Barisal, "Oxford Church", "Sharkal Fort", RHDHighwayClass.National_N, new Vector2(-300, -5600), false, false);
@@ -360,7 +419,7 @@ namespace BSTeam.BusSimulatorBD.World
             Add(60, "Pirojpur", BDDivision.Barisal, "Momin Mosque", "Two-Domed Mosque", RHDHighwayClass.Regional_R, new Vector2(-2100, -6400), false, false);
 
             // Mymensingh Division (4)
-            Add(61, "Mymensingh", BDDivision.Mymensingh, "Shashi Lodge & Brahmaputra", "Alexandra Castle, Muktagachha Rajbari", RHDHighwayClass.National_N, new Vector2(100, 5200), false, false);
+            Add(61, "Mymensingh", BDDivision.Mymensingh, "Shashi Lodge &amp; Brahmaputra", "Alexandra Castle, Muktagachha Rajbari", RHDHighwayClass.National_N, new Vector2(100, 5200), false, false);
             Add(62, "Sherpur", BDDivision.Mymensingh, "Gajni Leisure Centre", "Madhutila Eco-Park, Garh Jaripar Fort", RHDHighwayClass.Regional_R, new Vector2(-1400, 7400), true, false);
             Add(63, "Jamalpur", BDDivision.Mymensingh, "Lauchapra Picnic Spot", "Gandhi Ashram, Doyamoyee Temple", RHDHighwayClass.Regional_R, new Vector2(-2400, 6200), false, false);
             Add(64, "Netrokona", BDDivision.Mymensingh, "Birishiri China Matir Pahar", "Someswari River, Shah Sultan Rumi Shrine", RHDHighwayClass.Zilla_Z, new Vector2(2100, 6400), true, false);
@@ -386,7 +445,7 @@ namespace BSTeam.BusSimulatorBD.World
                 double dz = busWorldPos.z - node.scaledMapCoordsMeters.y;
                 double distSq = (dx * dx) + (dz * dz);
 
-                if (distSq <= triggerRadiusMeters * triggerRadiusMeters)
+                if (distSq &lt;= triggerRadiusMeters * triggerRadiusMeters)
                 {
                     if (node.isTourModeHighlight)
                         OnTourHighlightEntered?.Invoke(node);
@@ -397,6 +456,7 @@ namespace BSTeam.BusSimulatorBD.World
         }
     }
 }
+
 using UnityEngine;
 
 namespace BSTeam.BusSimulatorBD.Vehicle
@@ -406,13 +466,13 @@ namespace BSTeam.BusSimulatorBD.Vehicle
     {
         public enum TransmissionMode { Automatic, Manual6Speed }
 
-        [Header("Coach Identity & Condition")]
+        [Header("Coach Identity &amp; Condition")]
         public string coachModelName = "Hino AK 1J / Hyundai Universe";
         public TransmissionMode transmissionMode = TransmissionMode.Automatic;
         [Range(0f, 100f)] public float structuralHealth = 100f;
         [Range(0f, 100f)] public float bodyDirtiness = 0f;
 
-        [Header("Wheel Colliders & Visual Meshes")]
+        [Header("Wheel Colliders &amp; Visual Meshes")]
         [SerializeField] private WheelCollider frontLeftCollider;
         [SerializeField] private WheelCollider frontRightCollider;
         [SerializeField] private WheelCollider rearLeftCollider;
@@ -423,7 +483,7 @@ namespace BSTeam.BusSimulatorBD.Vehicle
         [SerializeField] private Transform rearLeftMesh;
         [SerializeField] private Transform rearRightMesh;
 
-        [Header("Engine Torque & Anti-Roll Physics")]
+        [Header("Engine Torque &amp; Anti-Roll Physics")]
         [SerializeField] private float peakMotorTorque = 4200f;
         [SerializeField] private float maxBrakeTorque = 6500f;
         [SerializeField] private float maxSteerAngle = 34f;
@@ -436,7 +496,7 @@ namespace BSTeam.BusSimulatorBD.Vehicle
         public float CurrentSpeedKmh { get; private set; }
         public float EngineRPM { get; private set; }
 
-        [Header("Steering Wheel & Door Animation")]
+        [Header("Steering Wheel &amp; Door Animation")]
         [SerializeField] private Transform steeringWheelMesh;
         [SerializeField] private float maxWheelVisualSpin = 450f;
         [SerializeField] private Animator passengerDoorAnimator;
@@ -450,7 +510,7 @@ namespace BSTeam.BusSimulatorBD.Vehicle
 
         private void Awake()
         {
-            rb = GetComponent<Rigidbody>();
+            rb = GetComponent&lt;Rigidbody&gt;();
             rb.mass = 13500f;
             rb.centerOfMass += centerOfMassOffset;
         }
@@ -464,13 +524,13 @@ namespace BSTeam.BusSimulatorBD.Vehicle
 
         public void ShiftGearUp()
         {
-            if (CurrentGearIndex < gearRatios.Length - 1)
+            if (CurrentGearIndex &lt; gearRatios.Length - 1)
                 CurrentGearIndex++;
         }
 
         public void ShiftGearDown()
         {
-            if (CurrentGearIndex > 0)
+            if (CurrentGearIndex &gt; 0)
                 CurrentGearIndex--;
         }
 
@@ -494,7 +554,7 @@ namespace BSTeam.BusSimulatorBD.Vehicle
             ApplyAntiRollBar(frontLeftCollider, frontRightCollider);
             ApplyAntiRollBar(rearLeftCollider, rearRightCollider);
 
-            if (CurrentSpeedKmh > 15f)
+            if (CurrentSpeedKmh &gt; 15f)
                 bodyDirtiness = Mathf.Min(100f, bodyDirtiness + Time.fixedDeltaTime * 0.05f);
         }
 
@@ -514,10 +574,10 @@ namespace BSTeam.BusSimulatorBD.Vehicle
 
         private void HandleAutomaticShifting()
         {
-            if (CurrentGearIndex <= 1) return;
-            if (EngineRPM > 2250f && CurrentGearIndex < gearRatios.Length - 1)
+            if (CurrentGearIndex &lt;= 1) return;
+            if (EngineRPM &gt; 2250f &amp;&amp; CurrentGearIndex &lt; gearRatios.Length - 1)
                 CurrentGearIndex++;
-            else if (EngineRPM < 950f && CurrentGearIndex > 2)
+            else if (EngineRPM &lt; 950f &amp;&amp; CurrentGearIndex &gt; 2)
                 CurrentGearIndex--;
         }
 
@@ -589,11 +649,12 @@ namespace BSTeam.BusSimulatorBD.Vehicle
         private void OnCollisionEnter(Collision collision)
         {
             float impact = collision.relativeVelocity.magnitude;
-            if (impact > 4f)
+            if (impact &gt; 4f)
                 structuralHealth = Mathf.Max(0f, structuralHealth - (impact * 1.5f));
         }
     }
 }
+
 using UnityEngine;
 
 namespace BSTeam.BusSimulatorBD.Audio
@@ -618,7 +679,7 @@ namespace BSTeam.BusSimulatorBD.Audio
 
         private void Awake()
         {
-            busController = GetComponent<Vehicle.BDRealisticBusController>();
+            busController = GetComponent&lt;Vehicle.BDRealisticBusController&gt;();
             ConfigureLoopingSource(idleEngineSource);
             ConfigureLoopingSource(midDieselSource);
             ConfigureLoopingSource(highTurboSource);
@@ -673,21 +734,22 @@ namespace BSTeam.BusSimulatorBD.Audio
             if (isHornHeld) return;
             isHornHeld = true;
 
-            if (hornAttackSource != null && hornAttackSource.clip != null)
+            if (hornAttackSource != null &amp;&amp; hornAttackSource.clip != null)
                 hornAttackSource.PlayOneShot(hornAttackSource.clip);
 
-            if (hornSustainLoopSource != null && !hornSustainLoopSource.isPlaying)
+            if (hornSustainLoopSource != null &amp;&amp; !hornSustainLoopSource.isPlaying)
                 hornSustainLoopSource.Play();
         }
 
         public void OnHornButtonReleased()
         {
             isHornHeld = false;
-            if (hornSustainLoopSource != null && hornSustainLoopSource.isPlaying)
+            if (hornSustainLoopSource != null &amp;&amp; hornSustainLoopSource.isPlaying)
                 hornSustainLoopSource.Stop();
         }
     }
 }
+
 using System.Collections;
 using System.IO;
 using UnityEngine;
@@ -711,7 +773,7 @@ namespace BSTeam.BusSimulatorBD.Customization
 
         public void LoadBuiltInLivery(string resourcesPath)
         {
-            Texture2D tex = Resources.Load<Texture2D>(resourcesPath);
+            Texture2D tex = Resources.Load&lt;Texture2D&gt;(resourcesPath);
             if (tex != null)
                 ApplyTextureToBus(tex);
         }
@@ -756,11 +818,12 @@ namespace BSTeam.BusSimulatorBD.Customization
             if (busBodyRenderer == null || skinTexture == null) return;
 
             Material[] mats = busBodyRenderer.materials;
-            if (bodyMaterialIndex < mats.Length)
+            if (bodyMaterialIndex &lt; mats.Length)
                 mats[bodyMaterialIndex].SetTexture("_BaseMap", skinTexture);
         }
     }
 }
+
 using System.Collections.Generic;
 using UnityEngine;
 using GoogleMobileAds.Api;
@@ -777,10 +840,10 @@ namespace BSTeam.BusSimulatorBD.Gameplay
         [SerializeField] private Vehicle.BDRealisticBusController busController;
 
         [Header("Bangladeshi AI Traffic Pool")]
-        [SerializeField] private List<GameObject> bdTrafficPrefabs; // Local buses, trucks, CNGs
+        [SerializeField] private List&lt;GameObject&gt; bdTrafficPrefabs; // Local buses, trucks, CNGs
         [SerializeField] private int trafficPoolSize = 18;
         [SerializeField] private float spawnRadiusMeters = 320f;
-        private readonly List<GameObject> activeTrafficPool = new List<GameObject>();
+        private readonly List&lt;GameObject&gt; activeTrafficPool = new List&lt;GameObject&gt;();
 
         [Header("AdMob Non-Intrusive Interstitial (Never Mid-Drive)")]
         [SerializeField] private string androidInterstitialId = "ca-app-pub-3940256099942544/1033173712"; // Google Test ID
@@ -791,7 +854,7 @@ namespace BSTeam.BusSimulatorBD.Gameplay
         private void Start()
         {
             InitializeTrafficPool();
-            MobileAds.Initialize(initStatus => { LoadInterstitialAd(); });
+            MobileAds.Initialize(initStatus =&gt; { LoadInterstitialAd(); });
 
             if (walkingDriverAvatar != null)
                 walkingDriverAvatar.SetActive(false);
@@ -809,7 +872,7 @@ namespace BSTeam.BusSimulatorBD.Gameplay
 
         public void ToggleDriverMode()
         {
-            if (busController.CurrentSpeedKmh > 2.0f) return;
+            if (busController.CurrentSpeedKmh &gt; 2.0f) return;
 
             isDriverWalking = !isDriverWalking;
 
@@ -833,7 +896,7 @@ namespace BSTeam.BusSimulatorBD.Gameplay
         {
             if (bdTrafficPrefabs == null || bdTrafficPrefabs.Count == 0) return;
 
-            for (int i = 0; i < trafficPoolSize; i++)
+            for (int i = 0; i &lt; trafficPoolSize; i++)
             {
                 GameObject prefab = bdTrafficPrefabs[i % bdTrafficPrefabs.Count];
                 GameObject vehicle = Instantiate(prefab, Vector3.zero, Quaternion.identity);
@@ -848,12 +911,12 @@ namespace BSTeam.BusSimulatorBD.Gameplay
             Vector3 busPos = busController.transform.position;
             float maxDistSq = spawnRadiusMeters * spawnRadiusMeters;
 
-            for (int i = 0; i < activeTrafficPool.Count; i++)
+            for (int i = 0; i &lt; activeTrafficPool.Count; i++)
             {
                 GameObject npc = activeTrafficPool[i];
                 if (!npc.activeSelf) continue;
 
-                if ((npc.transform.position - busPos).sqrMagnitude > maxDistSq)
+                if ((npc.transform.position - busPos).sqrMagnitude &gt; maxDistSq)
                     npc.SetActive(false); // Returns AI vehicle to pool cleanly without GC
             }
         }
@@ -867,7 +930,7 @@ namespace BSTeam.BusSimulatorBD.Gameplay
             }
 
             var adRequest = new AdRequest();
-            InterstitialAd.Load(androidInterstitialId, adRequest, (InterstitialAd ad, LoadAdError error) =>
+            InterstitialAd.Load(androidInterstitialId, adRequest, (InterstitialAd ad, LoadAdError error) =&gt;
             {
                 if (error != null || ad == null) return;
                 interstitialAd = ad;
@@ -879,8 +942,17 @@ namespace BSTeam.BusSimulatorBD.Gameplay
         {
             if (isDrivingActive) return;
 
-            if (interstitialAd != null && interstitialAd.CanShowAd())
+            if (interstitialAd != null &amp;&amp; interstitialAd.CanShowAd())
                 interstitialAd.Show();
         }
     }
 }
+  </pre>
+  <script>
+    function copyCode() {
+      const text = document.getElementById("codeBlock").innerText;
+      navigator.clipboard.writeText(text);
+    }
+  </script>
+</body>
+</html>

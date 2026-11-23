@@ -1,0 +1,146 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
+#if UNITY_ANDROID
+using UnityEngine.Android;
+#endif
+
+namespace BSTeam.BusSimulatorBD.Core
+{
+    public class SplashAndBootManager : MonoBehaviour
+    {
+        [Header("BS Team Branding UI")]
+        [SerializeField] private CanvasGroup bsTeamLogoGroup;
+        [SerializeField] private TextMeshProUGUI studioTitleText;
+        [SerializeField] private float splashFadeDuration = 1.0f;
+        [SerializeField] private float splashHoldDuration = 2.0f;
+
+        [Header("Loading Screen UI")]
+        [SerializeField] private GameObject loadingPanel;
+        [SerializeField] private Slider progressBar;
+        [SerializeField] private TextMeshProUGUI statusLabel;
+        [SerializeField] private TextMeshProUGUI percentageLabel;
+
+        [Header("Scene & Asset Configuration")]
+        [SerializeField] private string garageSceneName = "Garage_Dhaka";
+        [SerializeField] private string coreBangladeshiPackName = "bd_core_assets";
+        [SerializeField] private string mapPackName = "bd_64districts_map";
+
+        private void Start()
+        {
+            Application.targetFrameRate = 60;
+            Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
+            if (studioTitleText != null)
+                studioTitleText.text = "B.S TEAM";
+
+            if (loadingPanel != null)
+                loadingPanel.SetActive(false);
+
+            StartCoroutine(ExecuteBootSequence());
+        }
+
+        private IEnumerator ExecuteBootSequence()
+        {
+            // Phase 1: Display B.S Team Splash identical to Maleo Team intro cadence
+            yield return StartCoroutine(FadeCanvasGroup(bsTeamLogoGroup, 0f, 1f, splashFadeDuration));
+            yield return new WaitForSeconds(splashHoldDuration);
+            yield return StartCoroutine(FadeCanvasGroup(bsTeamLogoGroup, 1f, 0f, splashFadeDuration * 0.7f));
+
+            if (loadingPanel != null)
+                loadingPanel.SetActive(true);
+
+            // Phase 2: Mount Bangladeshi Play Asset Delivery (PAD) or Legacy OBB
+            UpdateProgress(0.05f, "Initializing BS Team Engine...");
+            yield return StartCoroutine(VerifyAndMountBangladeshiAssets());
+
+            // Phase 3: Asynchronously stream 3D Garage scene
+            UpdateProgress(0.45f, "Loading Dhaka Garage & Hanif Fleet...");
+            AsyncOperation loadOp = SceneManager.LoadSceneAsync(garageSceneName);
+            loadOp.allowSceneActivation = false;
+
+            while (loadOp.progress < 0.9f)
+            {
+                float mappedProgress = 0.45f + (loadOp.progress / 0.9f) * 0.50f;
+                UpdateProgress(mappedProgress, "Preparing Bangladeshi Roads & Liveries...");
+                yield return null;
+            }
+
+            UpdateProgress(1.0f, "Ready to Drive!");
+            yield return new WaitForSeconds(0.35f);
+            loadOp.allowSceneActivation = true;
+        }
+
+        private IEnumerator VerifyAndMountBangladeshiAssets()
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            if (AndroidAssetPacks.coreUnityAssetPacksDownloaded)
+            {
+                string[] corePacks = AndroidAssetPacks.GetCoreUnityAssetPackNames();
+                UpdateProgress(0.15f, $"Verified {corePacks.Length} Core Packs...");
+            }
+
+            // Verify both custom core fleet pack and 64-district map pack
+            string[] targetPacks = new string[] { coreBangladeshiPackName, mapPackName };
+            var stateOp = AndroidAssetPacks.GetAssetPackStateAsync(targetPacks);
+            while (!stateOp.isDone)
+                yield return null;
+
+            bool needsDownload = false;
+            foreach (var packState in stateOp.states)
+            {
+                if (packState.status != AndroidAssetPackStatus.Completed)
+                {
+                    needsDownload = true;
+                    break;
+                }
+            }
+
+            if (!needsDownload)
+            {
+                UpdateProgress(0.40f, "Bangladeshi Fleet & 64-District Map Mounted.");
+            }
+            else
+            {
+                UpdateProgress(0.25f, "Downloading Bangladesh Asset Packs...");
+                var downloadOp = AndroidAssetPacks.DownloadAssetPackAsync(targetPacks);
+                while (!downloadOp.isDone)
+                {
+                    UpdateProgress(0.25f + (downloadOp.progress * 0.15f), "Downloading Map & Traffic Assets...");
+                    yield return null;
+                }
+            }
+#else
+            UpdateProgress(0.30f, "Verifying Local Bangladeshi Asset Bundles...");
+            yield return new WaitForSeconds(0.5f);
+#endif
+        }
+
+        private IEnumerator FadeCanvasGroup(CanvasGroup group, float startAlpha, float endAlpha, float duration)
+        {
+            if (group == null) yield break;
+            float elapsed = 0f;
+            group.alpha = startAlpha;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                group.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsed / duration);
+                yield return null;
+            }
+            group.alpha = endAlpha;
+        }
+
+        private void UpdateProgress(float normalizedValue, string message)
+        {
+            if (progressBar != null)
+                progressBar.value = Mathf.Clamp01(normalizedValue);
+            if (statusLabel != null)
+                statusLabel.text = message;
+            if (percentageLabel != null)
+                percentageLabel.text = $"{Mathf.RoundToInt(normalizedValue * 100f)}%";
+        }
+    }
+}
